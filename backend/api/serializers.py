@@ -9,14 +9,14 @@ class UsuarioSerializer(serializers.ModelSerializer):
 class ImovelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Imovel
-        fields = '__all_'
+        fields = '__all__'
 
 class ContratoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contrato
-        fields = '__all_'
+        fields = '__all__'
 
 class PagamentoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pagamento
-        fields = '__all_'
+        fields = '__all__'

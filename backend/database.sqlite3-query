@@ -1,0 +1,68 @@
+-- database: ./db.sqlite3
+
+-- Use the ▷ button in the top right corner to run the entire file.
+
+SELECT * FROM api_usuario;
+
+INSERT INTO api_usuario (nome, email, telefone, tipo) VALUES
+('ana', 'ana@gmail.com', '19 934561200', 'LOCATARIO'),
+('bruno', 'bruno@gmail.com', '19 988771122', 'LOCADOR'),
+('daniela', 'daniela@gmail.com', '19 977663344', 'LOCATARIO'),
+('eduardo', 'eduardo@gmail.com', '19 966554433', 'LOCADOR'),
+('fernanda', 'fernanda@gmail.com', '19 955447788', 'LOCATARIO'),
+('gabriel', 'gabriel@gmail.com', '19 944332211', 'LOCATARIO'),
+('helena', 'helena@gmail.com', '19 933221144', 'LOCADOR'),
+('igor', 'igor@gmail.com', '19 922118877', 'LOCATARIO'),
+('juliana', 'juliana@gmail.com', '19 911009988', 'LOCATARIO'),
+('leonardo', 'leonardo@gmail.com', '19 900887766', 'LOCADOR');
+
+INSERT INTO api_imovel (titulo, tipo, valor_aluguel, status, locador_id) VALUES
+('Apartamento 2 quartos no Centro', 'APARTAMENTO', 1500.00, 'DISPONIVEL', 1),
+('Casa com quintal no Jardim América', 'CASA', 2200.00, 'DISPONIVEL', 3),
+('Kitnet mobiliada próxima à faculdade', 'KITNET', 950.00, 'DISPONIVEL', 4),
+('Apartamento 3 quartos com suíte', 'APARTAMENTO', 2800.00, 'ALUGADO', 5),
+('Casa térrea com garagem', 'CASA', 2000.00, 'DISPONIVEL', 6),
+('Sala comercial no Centro', 'COMERCIAL', 1800.00, 'DISPONIVEL', 7),
+('Apartamento compacto moderno', 'APARTAMENTO', 1300.00, 'ALUGADO', 8),
+('Sobrado em condomínio fechado', 'CASA', 3200.00, 'DISPONIVEL', 9),
+('Loft próximo ao metrô', 'APARTAMENTO', 1700.00, 'DISPONIVEL', 10),
+('Casa simples bairro tranquilo', 'CASA', 1400.00, 'ALUGADO', 11),
+('Ponto comercial avenida principal', 'COMERCIAL', 3500.00, 'DISPONIVEL', 12),
+('Apartamento com varanda gourmet', 'APARTAMENTO', 2600.00, 'DISPONIVEL', 13),
+('Kitnet econômica', 'KITNET', 800.00, 'DISPONIVEL', 14),
+('Casa grande com piscina', 'CASA', 4500.00, 'DISPONIVEL', 15),
+('Sala comercial pequena', 'COMERCIAL', 1200.00, 'ALUGADO', 16);
+
+INSERT INTO api_contrato (data_inicio, data_fim, valor, locador_id, locatario_id, imovel_id) VALUES
+('2024-01-10', '2025-01-10', 1500.00, 1, 6, 1),
+('2024-02-01', '2025-02-01', 2200.00, 8, 7, 2),
+('2024-03-05', '2025-03-05', 950.00, 10, 11, 3),
+('2024-01-15', '2025-01-15', 2800.00, 13, 9, 4),
+('2024-04-10', '2025-04-10', 2000.00, 16, 3, 5),
+('2024-05-20', '2025-05-20', 1800.00, 1, 11, 6),
+('2024-06-01', '2025-06-01', 1300.00, 8, 12, 7),
+('2024-02-18', '2025-02-18', 3200.00, 10, 15, 8),
+('2024-07-07', '2025-07-07', 1700.00, 13, 14, 9),
+('2024-03-22', '2025-03-22', 1400.00, 16, 15, 10),
+('2024-08-12', '2025-08-12', 3500.00, 1, 6, 11),
+('2024-09-01', '2025-09-01', 2600.00, 8, 7, 12),
+('2024-10-10', '2025-10-10', 800.00, 10, 5, 13),
+('2024-11-05', '2025-11-05', 4500.00, 13, 9, 14),
+('2024-12-15', '2025-12-15', 1200.00, 16, 12, 15);
+
+INSERT INTO api_pagamento (data_pagamento, valor, status, contrato_id) VALUES
+('2024-02-10', 1500.00, 'PAGO', 1),
+('2024-03-01', 2200.00, 'PAGO', 2),
+('2024-04-05', 950.00, 'PAGO', 3),
+('2024-02-15', 2800.00, 'PENDENTE', 4),
+('2024-05-10', 2000.00, 'PAGO', 5),
+('2024-06-20', 1800.00, 'PAGO', 6),
+('2024-07-01', 1300.00, 'ATRASADO', 7),
+('2024-03-18', 3200.00, 'PAGO', 8),
+('2024-08-07', 1700.00, 'PENDENTE', 9),
+('2024-04-22', 1400.00, 'PAGO', 10),
+('2024-09-12', 3500.00, 'PAGO', 11),
+('2024-10-01', 2600.00, 'ATRASADO', 12),
+('2024-11-10', 800.00, 'PAGO', 13),
+('2024-12-05', 4500.00, 'PENDENTE', 14),
+('2025-01-15', 1200.00, 'PAGO', 15);
