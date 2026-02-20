@@ -31,11 +31,21 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
+    'django_filters',
 ]
 
 REST_FRAMEWORK = {
+    # tipo de auenticação jwt
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    # tudo vai exigir login
+    # 'DEFAULT PERMISSION_CLASSES':(
+    #     'rest_framework.permissions.IsAuthenticated'
+    # ),
+    # Filtros
+    'DEFAULT_FILTER_BACKENDS':(
+        'django_filters.rest_framework.DjangoFilterBackend'
     )
 }
 
