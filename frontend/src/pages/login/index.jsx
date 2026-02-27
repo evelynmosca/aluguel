@@ -23,7 +23,15 @@ export default function Login(){
             setMessage("Deu certo diva")
             
             localStorage.setItem('token', response.data.access)
-            navigate('/homeuser')
+
+            const me = await axios.get('http://127.0.0.1:8000/api/me/')
+
+            if (me.data.is_staff){
+                navigate('/homeuser')
+            }else{
+                navigate('/homeuser')
+            }
+
 
         } catch (error) {
             console.log("Error: ", error);
@@ -57,9 +65,9 @@ export default function Login(){
 
                 <button className="btn_1" onClick={logar}>Enter</button>
 
+                <button className="btn_1" onClick={() => navigate('/register')}>Cadastre-se</button>
+
             </section>
-
         </div>
-
     )
 }
