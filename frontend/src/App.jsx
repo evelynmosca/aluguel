@@ -6,6 +6,11 @@ import Register from './pages/register'
 
 import AdminRoute from './routes/AdminRoute'
 import PrivateRoute from './routes/PrivateRoute'
+import AdminContracts from './pages/admin/contracts'
+import AdminPayments from './pages/admin/payments'
+import AdminProperties from './pages/admin/properties'
+import AdminUsers from './pages/admin/users'
+
 
 const App = ()=>{
   return(
@@ -29,6 +34,42 @@ const App = ()=>{
           element={
             <AdminRoute>
               <HomeAdmin />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path='/admin/contracts'
+          element={
+            <PrivateRoute>
+              <AdminContracts />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path='/admin/payments'
+          element={
+            <AdminRoute>
+              <AdminPayments />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path='/admin/properties'
+          element={
+            <PrivateRoute>
+              <AdminProperties />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path='/admin/users'
+          element={
+            <AdminRoute>
+              <AdminUsers />
             </AdminRoute>
           }
         />
