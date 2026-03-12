@@ -17,5 +17,6 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', RegisterView.as_view(), name='register'),
+    path('importar_imoveis/', importar_imoveis, name='importar_imoveis'),
     path('', include(router.urls))
 ]

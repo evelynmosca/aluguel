@@ -1,9 +1,9 @@
 // src/pages/admin/properties/index.jsx
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
 import "./styles.css";
+
 
 import {
   Chart as ChartJS,
@@ -28,7 +28,7 @@ ChartJS.register(
   Legend
 );
 
-export default function Properties() {
+export default function PropertiesAdmin() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -42,10 +42,29 @@ export default function Properties() {
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [disp, setDisp] = useState(0)
+  const [alug, setAlug] = useState(0)
+
+  const fileInputRef = useRef(null)
+
   const headers = useMemo(
     () => ({ headers: { Authorization: `Bearer ${token}` } }),
     [token]
   );
+
+  const listarImoveis = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/dashboard/", (
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      ));
+      setDisp(response.data.status.disponiveis)
+      setAlug(response.data.status.alugados)
+    } catch {
+
+    }
+  }
 
   const listar = async () => {
     setErro("");
@@ -91,7 +110,10 @@ export default function Properties() {
   };
 
   useEffect(() => {
-    if (token) listar();
+    if (token) {
+      listar(),
+        listarImoveis()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -114,59 +136,20 @@ export default function Properties() {
     return "pill";
   };
 
-  const totalImoveis = imoveis.length;
+  const total = imoveis.length;
   const disponiveis = imoveis.filter((i) => i.status === "DISPONIVEL").length;
   const alugados = imoveis.filter((i) => i.status === "ALUGADO").length;
-
-  const barData = {
-    labels: ["Total", "Disponíveis", "Alugados"],
-    datasets: [
-      {
-        label: "Imóveis",
-        data: [totalImoveis, disponiveis, alugados],
-        backgroundColor: [
-          "#6366f1",
-          "#22c55e",
-          "#f59e0b"
-        ],
-      },
-    ],
-  };
-
-  const barOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        labels: { color: "#e2e8f0" }
-      },
-      title: {
-        display: true,
-        text: "Resumo de Imóveis",
-        color: "#e2e8f0"
-      }
-    },
-    scales: {
-      x: {
-        ticks: { color: "#e2e8f0" },
-        grid: { color: "rgba(255,255,255,0.1)" }
-      },
-      y: {
-        ticks: { color: "#e2e8f0" },
-        grid: { color: "rgba(255,255,255,0.1)" }
-      }
-    }
-  };
 
   const doughnutData = {
     labels: ["Disponíveis", "Alugados"],
     datasets: [
       {
-        data: [disponiveis, alugados],
+        data: [disp, alug],
         backgroundColor: [
-          "#3af800",
-          "#f6673b"
+          "#3af800", // verde forte
+          "#f6673b"  // azul forte
         ],
-        borderColor: "#0f172a",
+        borderColor: "#0f172a", // mesma cor do fundo (para separar)
         borderWidth: 2,
       },
     ],
@@ -184,6 +167,46 @@ export default function Properties() {
       }
     }
   };
+
+  const abrirSeletorExcel = ()=>{
+    fileInputRef.current?.click()
+  }
+
+  const importarExcel = async(event)=>{
+    const file = event.target.files[0]
+    console.log("File:", file);
+    
+    if (!file) return;
+
+    const formData = new FormData()
+    formData.append('file', file)
+    console.log("FomrData: ", formData);
+    
+    setErro("")
+    setLoading(true)
+
+    try {
+      await axios.post("http://127.0.0.1:8000/api/importar_imoveis/", formData,
+        {
+          headers:{
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multpart/form-data"
+          }
+        }
+      )
+
+      await listar()
+      alert("Importação realizada com sucesso.")
+    } catch (error) {
+      console.log("Erro: ", error);
+      setErro("Erro ao importar dados da planilha")
+      
+    } finally{
+      setLoading(false)
+      event.target.value = ""
+    }
+    
+  }
 
   return (
     <div className="dashboard">
@@ -209,6 +232,36 @@ export default function Properties() {
           </div>
         </div>
 
+                <div
+          style={{
+            display: "flex",
+            flexDirection: "column", 
+            gap: 10, 
+            alignItems: "flex-end", 
+          }}
+        >
+          <div className="dashboard__chip" title="Token carregado no navegador">
+            <span className="dot" />
+            <span>{loading ? "Carregando" : "Conectado"}</span>
+          </div>
+
+          <button
+            className="actionBtn"
+            onClick={abrirSeletorExcel} 
+            disabled={loading} 
+          >
+            Importar Excel
+          </button>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".xlsx,.xls"
+            style={{ display: "none" }}
+            onChange={importarExcel} 
+          />
+        </div>
+
         <div className="dashboard__chip" title="Token carregado no navegador">
           <span className="dot" />
           <span>{loading ? "Carregando" : "Conectado"}</span>
@@ -221,14 +274,14 @@ export default function Properties() {
           <div className="card__badge badge--primary" />
           <div className="card__content">
             <p className="card__label">Total de imóveis</p>
-            <p className="card__value">{totalImoveis}</p>
+            <p className="card__value">{total}</p>
             <p className="card__hint">Base cadastrada</p>
           </div>
         </div>
 
         <div className="card">
           <div className="card__badge badge--secondary" />
-          <div className="card__content"> 
+          <div className="card__content">
             <p className="card__label">Pesquisa</p>
             <p className="card__value">{lista.length}</p>
             <p className="card__hint">Resultados filtrados</p>
@@ -256,26 +309,12 @@ export default function Properties() {
 
       <hr className="hr" />
 
-      {/* Charts */}
-      <div className="charts">
-
-        <div className="chartCard">
-          <p className="chartCard__title">Resumo de Imóveis</p>
-          <div className="chartCanvas">
-            <Bar data={barData} options={barOptions} />
-          </div>
+      <div className="chartCard">
+        <p className="chartCard__title">Distribuição de Imóveis</p>
+        <div className="chartCanvas">
+          <Doughnut data={doughnutData} options={doughnutOptions} />
         </div>
-
-        <div className="chartCard">
-          <p className="chartCard__title">Distribuição de Imóveis</p>
-          <div className="chartCanvas">
-            <Doughnut data={doughnutData} options={doughnutOptions} />
-          </div>
-        </div>
-
       </div>
-
-      <hr className="hr" />
 
       {/* Pesquisa */}
       <h3 className="sectionTitle">Pesquisar imóveis</h3>
